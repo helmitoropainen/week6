@@ -3,6 +3,8 @@ import { Chart } from "frappe-charts/dist/frappe-charts.min.esm";
 
 const input = document.getElementById("input-area");
 const form = document.getElementById("input-form");
+let names;
+let codes;
 
 const jsonQuery = {
   query: [
@@ -56,17 +58,20 @@ const jsonQuery = {
   },
 };
 
-form.addEventListener("submit", async (event) => {
-  event.preventDefault();
-  const area = input.value.toLowerCase();
-  console.log(area);
+const getAreas = async () => {
   const url =
     "https://statfin.stat.fi/PxWeb/api/v1/en/StatFin/synt/statfin_synt_pxt_12dy.px";
   const res = await fetch(url);
   const data = await res.json();
   //console.log(data);
-  const names = data.variables[1].valueTexts;
-  const codes = data.variables[1].values;
+  names = data.variables[1].valueTexts;
+  codes = data.variables[1].values;
+};
+
+form.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const area = input.value.toLowerCase();
+  console.log(area);
   let areaIndex;
   names.forEach((value, index) => {
     if (value.toLowerCase() == area) {
@@ -119,3 +124,4 @@ const buildChart = async () => {
 };
 
 buildChart();
+getAreas();

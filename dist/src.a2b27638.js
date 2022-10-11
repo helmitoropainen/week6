@@ -3418,6 +3418,8 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 var input = document.getElementById("input-area");
 var form = document.getElementById("input-form");
+var names;
+var codes;
 var jsonQuery = {
   query: [{
     code: "Vuosi",
@@ -3442,28 +3444,46 @@ var jsonQuery = {
     format: "json-stat2"
   }
 };
-form.addEventListener("submit", /*#__PURE__*/function () {
-  var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(event) {
-    var area, url, res, data, names, codes, areaIndex, code;
+var getAreas = /*#__PURE__*/function () {
+  var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
+    var url, res, data;
     return _regeneratorRuntime().wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
-            event.preventDefault();
-            area = input.value.toLowerCase();
-            console.log(area);
             url = "https://statfin.stat.fi/PxWeb/api/v1/en/StatFin/synt/statfin_synt_pxt_12dy.px";
-            _context.next = 6;
+            _context.next = 3;
             return fetch(url);
-          case 6:
+          case 3:
             res = _context.sent;
-            _context.next = 9;
+            _context.next = 6;
             return res.json();
-          case 9:
+          case 6:
             data = _context.sent;
             //console.log(data);
             names = data.variables[1].valueTexts;
             codes = data.variables[1].values;
+          case 9:
+          case "end":
+            return _context.stop();
+        }
+      }
+    }, _callee);
+  }));
+  return function getAreas() {
+    return _ref.apply(this, arguments);
+  };
+}();
+form.addEventListener("submit", /*#__PURE__*/function () {
+  var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(event) {
+    var area, areaIndex, code;
+    return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+      while (1) {
+        switch (_context2.prev = _context2.next) {
+          case 0:
+            event.preventDefault();
+            area = input.value.toLowerCase();
+            console.log(area);
             names.forEach(function (value, index) {
               if (value.toLowerCase() == area) {
                 areaIndex = index;
@@ -3474,26 +3494,26 @@ form.addEventListener("submit", /*#__PURE__*/function () {
               jsonQuery.query[1].selection.values[0] = code;
               buildChart();
             }
-          case 15:
+          case 6:
           case "end":
-            return _context.stop();
+            return _context2.stop();
         }
       }
-    }, _callee);
+    }, _callee2);
   }));
   return function (_x) {
-    return _ref.apply(this, arguments);
+    return _ref2.apply(this, arguments);
   };
 }());
 var getData = /*#__PURE__*/function () {
-  var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
+  var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
     var url, res, data;
-    return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+    return _regeneratorRuntime().wrap(function _callee3$(_context3) {
       while (1) {
-        switch (_context2.prev = _context2.next) {
+        switch (_context3.prev = _context3.next) {
           case 0:
             url = "https://statfin.stat.fi/PxWeb/api/v1/en/StatFin/synt/statfin_synt_pxt_12dy.px";
-            _context2.next = 3;
+            _context3.next = 3;
             return fetch(url, {
               method: "POST",
               headers: {
@@ -3502,40 +3522,40 @@ var getData = /*#__PURE__*/function () {
               body: JSON.stringify(jsonQuery)
             });
           case 3:
-            res = _context2.sent;
+            res = _context3.sent;
             if (res.ok) {
-              _context2.next = 6;
+              _context3.next = 6;
               break;
             }
-            return _context2.abrupt("return");
+            return _context3.abrupt("return");
           case 6:
-            _context2.next = 8;
+            _context3.next = 8;
             return res.json();
           case 8:
-            data = _context2.sent;
-            return _context2.abrupt("return", data);
+            data = _context3.sent;
+            return _context3.abrupt("return", data);
           case 10:
           case "end":
-            return _context2.stop();
+            return _context3.stop();
         }
       }
-    }, _callee2);
+    }, _callee3);
   }));
   return function getData() {
-    return _ref2.apply(this, arguments);
+    return _ref3.apply(this, arguments);
   };
 }();
 var buildChart = /*#__PURE__*/function () {
-  var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
+  var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
     var fetchedData, data, chart;
-    return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+    return _regeneratorRuntime().wrap(function _callee4$(_context4) {
       while (1) {
-        switch (_context3.prev = _context3.next) {
+        switch (_context4.prev = _context4.next) {
           case 0:
-            _context3.next = 2;
+            _context4.next = 2;
             return getData();
           case 2:
-            fetchedData = _context3.sent;
+            fetchedData = _context4.sent;
             data = {
               labels: jsonQuery.query[0].selection.values,
               datasets: [{
@@ -3551,16 +3571,17 @@ var buildChart = /*#__PURE__*/function () {
             });
           case 5:
           case "end":
-            return _context3.stop();
+            return _context4.stop();
         }
       }
-    }, _callee3);
+    }, _callee4);
   }));
   return function buildChart() {
-    return _ref3.apply(this, arguments);
+    return _ref4.apply(this, arguments);
   };
 }();
 buildChart();
+getAreas();
 },{"./styles.css":"src/styles.css","frappe-charts/dist/frappe-charts.min.esm":"node_modules/frappe-charts/dist/frappe-charts.min.esm.js"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';

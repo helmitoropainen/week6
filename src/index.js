@@ -98,7 +98,8 @@ const getData = async () => {
     return;
   }
   const data = await res.json();
-
+  console.log(data);
+  console.log(data.value);
   return data;
 };
 

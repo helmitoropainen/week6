@@ -3533,8 +3533,9 @@ var getData = /*#__PURE__*/function () {
             return res.json();
           case 8:
             data = _context3.sent;
+            console.log(data);
             return _context3.abrupt("return", data);
-          case 10:
+          case 11:
           case "end":
             return _context3.stop();
         }

@@ -1,6 +1,15 @@
 import "./styles.css";
 import { Chart } from "frappe-charts/dist/frappe-charts.min.esm";
 
+const input = document.getElementById("input-area");
+const form = document.getElementById("submit-data");
+
+form.addEventListener("submit", (event) => {
+  event.preventDefault();
+  const area = input.value;
+  console.log(area);
+});
+
 const jsonQuery = {
   query: [
     {
@@ -29,28 +38,28 @@ const jsonQuery = {
           "2018",
           "2019",
           "2020",
-          "2021"
-        ]
-      }
+          "2021",
+        ],
+      },
     },
     {
       code: "Alue",
       selection: {
         filter: "item",
-        values: ["SSS"]
-      }
+        values: ["SSS"],
+      },
     },
     {
       code: "Tiedot",
       selection: {
         filter: "item",
-        values: ["vaesto"]
-      }
-    }
+        values: ["vaesto"],
+      },
+    },
   ],
   response: {
-    format: "json-stat2"
-  }
+    format: "json-stat2",
+  },
 };
 
 const getData = async () => {
@@ -60,7 +69,7 @@ const getData = async () => {
   const res = await fetch(url, {
     method: "POST",
     headers: { "content-type": "application/json" },
-    body: JSON.stringify(jsonQuery)
+    body: JSON.stringify(jsonQuery),
   });
   if (!res.ok) {
     return;
@@ -78,16 +87,16 @@ const buildChart = async () => {
     datasets: [
       {
         name: "Population",
-        values: fetchedData.value
-      }
-    ]
+        values: fetchedData.value,
+      },
+    ],
   };
 
   const chart = new Chart("#chart", {
     data: data,
     height: 450,
     type: "line",
-    color: "#eb5146"
+    colors: ["#eb5146"],
   });
 };
 

@@ -2,13 +2,7 @@ import "./styles.css";
 import { Chart } from "frappe-charts/dist/frappe-charts.min.esm";
 
 const input = document.getElementById("input-area");
-const form = document.getElementById("submit-data");
-
-form.addEventListener("submit", (event) => {
-  event.preventDefault();
-  const area = input.value;
-  console.log(area);
-});
+const form = document.getElementById("input-form");
 
 const jsonQuery = {
   query: [
@@ -61,6 +55,30 @@ const jsonQuery = {
     format: "json-stat2",
   },
 };
+
+form.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const area = input.value.toLowerCase();
+  console.log(area);
+  const url =
+    "https://statfin.stat.fi/PxWeb/api/v1/en/StatFin/synt/statfin_synt_pxt_12dy.px";
+  const res = await fetch(url);
+  const data = await res.json();
+  //console.log(data);
+  const names = data.variables[1].valueTexts;
+  const codes = data.variables[1].values;
+  let areaIndex;
+  names.forEach((value, index) => {
+    if (value.toLowerCase() == area) {
+      areaIndex = index;
+    }
+  });
+  const code = codes[areaIndex];
+  if (code) {
+    jsonQuery.query[1].selection.values[0] = code;
+    buildChart();
+  }
+});
 
 const getData = async () => {
   const url =

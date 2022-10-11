@@ -3463,19 +3463,15 @@ form.addEventListener("submit", /*#__PURE__*/function () {
             data = _context.sent;
             //console.log(data);
             names = data.variables[1].valueTexts;
-            codes = data.variables[1].values; //console.log(names);
-            //console.log(codes);
+            codes = data.variables[1].values;
             names.forEach(function (value, index) {
-              //console.log(value, index, area);
               if (value.toLowerCase() == area) {
                 areaIndex = index;
               }
             });
             code = codes[areaIndex];
             if (code) {
-              //console.log(jsonQuery.query[1].selection.values);
               jsonQuery.query[1].selection.values[0] = code;
-              //console.log(jsonQuery.query[1].selection.values);
               buildChart();
             }
           case 15:

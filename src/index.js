@@ -67,20 +67,15 @@ form.addEventListener("submit", async (event) => {
   //console.log(data);
   const names = data.variables[1].valueTexts;
   const codes = data.variables[1].values;
-  //console.log(names);
-  //console.log(codes);
   let areaIndex;
   names.forEach((value, index) => {
-    //console.log(value, index, area);
     if (value.toLowerCase() == area) {
       areaIndex = index;
     }
   });
   const code = codes[areaIndex];
   if (code) {
-    //console.log(jsonQuery.query[1].selection.values);
     jsonQuery.query[1].selection.values[0] = code;
-    //console.log(jsonQuery.query[1].selection.values);
     buildChart();
   }
 });

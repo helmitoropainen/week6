@@ -117,7 +117,7 @@ const buildChart = async () => {
   };
 
   const chart = new Chart("#chart", {
-    title: "Population",
+    //title: "Population",
     data: data,
     height: 450,
     type: "line",

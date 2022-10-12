@@ -3566,6 +3566,7 @@ var buildChart = /*#__PURE__*/function () {
               }]
             };
             chart = new _frappeChartsMin.Chart("#chart", {
+              title: "Population",
               data: data,
               height: 450,
               type: "line",

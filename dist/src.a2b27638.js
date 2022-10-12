@@ -3422,6 +3422,7 @@ var add = document.getElementById("add-data");
 var names;
 var codes;
 var chart;
+var chart2;
 var jsonQuery = {
   query: [{
     code: "Vuosi",
@@ -3476,74 +3477,78 @@ var getAreas = /*#__PURE__*/function () {
     return _ref.apply(this, arguments);
   };
 }();
-form.addEventListener("submit", /*#__PURE__*/function () {
-  var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(event) {
-    var area, areaIndex, code;
-    return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+if (form) {
+  form.addEventListener("submit", /*#__PURE__*/function () {
+    var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(event) {
+      var area, areaIndex, code;
+      return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+        while (1) {
+          switch (_context2.prev = _context2.next) {
+            case 0:
+              event.preventDefault();
+              area = input.value.toLowerCase(); //console.log(area);
+              names.forEach(function (value, index) {
+                if (value.toLowerCase() == area) {
+                  areaIndex = index;
+                }
+              });
+              code = codes[areaIndex];
+              if (code) {
+                jsonQuery.query[1].selection.values[0] = code;
+                buildChart();
+              }
+            case 5:
+            case "end":
+              return _context2.stop();
+          }
+        }
+      }, _callee2);
+    }));
+    return function (_x) {
+      return _ref2.apply(this, arguments);
+    };
+  }());
+}
+if (add) {
+  add.addEventListener("click", /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
+    var fetchedData, data, length, deltas, sum, mean, newPoint, newData;
+    return _regeneratorRuntime().wrap(function _callee3$(_context3) {
       while (1) {
-        switch (_context2.prev = _context2.next) {
+        switch (_context3.prev = _context3.next) {
           case 0:
-            event.preventDefault();
-            area = input.value.toLowerCase(); //console.log(area);
-            names.forEach(function (value, index) {
-              if (value.toLowerCase() == area) {
-                areaIndex = index;
+            _context3.next = 2;
+            return getData();
+          case 2:
+            fetchedData = _context3.sent;
+            data = fetchedData.value;
+            length = data.length - 1;
+            deltas = [];
+            data.forEach(function (value, index) {
+              if (index < length) {
+                deltas.push(data[index + 1] - data[index]);
+                //console.log(value, index);
               }
             });
-            code = codes[areaIndex];
-            if (code) {
-              jsonQuery.query[1].selection.values[0] = code;
-              buildChart();
-            }
-          case 5:
+            sum = 0;
+            deltas.forEach(function (item) {
+              sum += item;
+            });
+            mean = sum / length; //console.log(deltas);
+            //console.log(sum, length, mean);
+            newPoint = mean + data[length];
+            newData = [];
+            newData.push(newPoint);
+            data.push(newPoint);
+            //console.log(data);
+            chart.addDataPoint("2022", newData);
+          case 15:
           case "end":
-            return _context2.stop();
+            return _context3.stop();
         }
       }
-    }, _callee2);
-  }));
-  return function (_x) {
-    return _ref2.apply(this, arguments);
-  };
-}());
-add.addEventListener("click", /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
-  var fetchedData, data, length, deltas, sum, mean, newPoint, newData;
-  return _regeneratorRuntime().wrap(function _callee3$(_context3) {
-    while (1) {
-      switch (_context3.prev = _context3.next) {
-        case 0:
-          _context3.next = 2;
-          return getData();
-        case 2:
-          fetchedData = _context3.sent;
-          data = fetchedData.value;
-          length = data.length - 1;
-          deltas = [];
-          data.forEach(function (value, index) {
-            if (index < length) {
-              deltas.push(data[index + 1] - data[index]);
-              //console.log(value, index);
-            }
-          });
-          sum = 0;
-          deltas.forEach(function (item) {
-            sum += item;
-          });
-          mean = sum / length; //console.log(deltas);
-          //console.log(sum, length, mean);
-          newPoint = mean + data[length];
-          newData = [];
-          newData.push(newPoint);
-          data.push(newPoint);
-          //console.log(data);
-          chart.addDataPoint("2022", newData);
-        case 15:
-        case "end":
-          return _context3.stop();
-      }
-    }
-  }, _callee3);
-})));
+    }, _callee3);
+  })));
+}
 var getData = /*#__PURE__*/function () {
   var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
     var url, res, data;
@@ -3620,7 +3625,61 @@ var buildChart = /*#__PURE__*/function () {
     return _ref5.apply(this, arguments);
   };
 }();
-buildChart();
+var buildChart2 = /*#__PURE__*/function () {
+  var _ref6 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6() {
+    var fetchedData, values, length, births, deaths, i, data;
+    return _regeneratorRuntime().wrap(function _callee6$(_context6) {
+      while (1) {
+        switch (_context6.prev = _context6.next) {
+          case 0:
+            jsonQuery.query[2].selection.values = ["vm01", "vm11"];
+            _context6.next = 3;
+            return getData();
+          case 3:
+            fetchedData = _context6.sent;
+            values = fetchedData.value;
+            length = values.length / 2;
+            births = [];
+            deaths = [];
+            for (i = 0; i < length; i++) {
+              births.push(values[i * 2]);
+              deaths.push(values[i * 2 + 1]);
+            }
+            console.log(births, deaths);
+            data = {
+              labels: jsonQuery.query[0].selection.values,
+              datasets: [{
+                name: "Births",
+                values: births
+              }, {
+                name: "Deaths",
+                values: deaths
+              }]
+            };
+            chart2 = new _frappeChartsMin.Chart("#chart2", {
+              title: "Population",
+              data: data,
+              height: 450,
+              type: "bar",
+              colors: ["#63d0ff", "#363636"]
+            });
+          case 12:
+          case "end":
+            return _context6.stop();
+        }
+      }
+    }, _callee6);
+  }));
+  return function buildChart2() {
+    return _ref6.apply(this, arguments);
+  };
+}();
+if (document.getElementById("chart")) {
+  buildChart();
+}
+if (document.getElementById("chart2")) {
+  buildChart2();
+}
 getAreas();
 },{"./styles.css":"src/styles.css","frappe-charts/dist/frappe-charts.min.esm":"node_modules/frappe-charts/dist/frappe-charts.min.esm.js"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];

@@ -3418,8 +3418,10 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 var input = document.getElementById("input-area");
 var form = document.getElementById("input-form");
+var add = document.getElementById("add-data");
 var names;
 var codes;
+var chart;
 var jsonQuery = {
   query: [{
     code: "Vuosi",
@@ -3482,8 +3484,7 @@ form.addEventListener("submit", /*#__PURE__*/function () {
         switch (_context2.prev = _context2.next) {
           case 0:
             event.preventDefault();
-            area = input.value.toLowerCase();
-            console.log(area);
+            area = input.value.toLowerCase(); //console.log(area);
             names.forEach(function (value, index) {
               if (value.toLowerCase() == area) {
                 areaIndex = index;
@@ -3494,7 +3495,7 @@ form.addEventListener("submit", /*#__PURE__*/function () {
               jsonQuery.query[1].selection.values[0] = code;
               buildChart();
             }
-          case 6:
+          case 5:
           case "end":
             return _context2.stop();
         }
@@ -3505,15 +3506,53 @@ form.addEventListener("submit", /*#__PURE__*/function () {
     return _ref2.apply(this, arguments);
   };
 }());
+add.addEventListener("click", /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
+  var fetchedData, data, length, deltas, sum, mean, newPoint, newData;
+  return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+    while (1) {
+      switch (_context3.prev = _context3.next) {
+        case 0:
+          _context3.next = 2;
+          return getData();
+        case 2:
+          fetchedData = _context3.sent;
+          data = fetchedData.value;
+          length = data.length - 1;
+          deltas = [];
+          data.forEach(function (value, index) {
+            if (index < length) {
+              deltas.push(data[index + 1] - data[index]);
+              //console.log(value, index);
+            }
+          });
+          sum = 0;
+          deltas.forEach(function (item) {
+            sum += item;
+          });
+          mean = sum / length; //console.log(deltas);
+          //console.log(sum, length, mean);
+          newPoint = mean + data[length];
+          newData = [];
+          newData.push(newPoint);
+          data.push(newPoint);
+          //console.log(data);
+          chart.addDataPoint("2022", newData);
+        case 15:
+        case "end":
+          return _context3.stop();
+      }
+    }
+  }, _callee3);
+})));
 var getData = /*#__PURE__*/function () {
-  var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
+  var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
     var url, res, data;
-    return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+    return _regeneratorRuntime().wrap(function _callee4$(_context4) {
       while (1) {
-        switch (_context3.prev = _context3.next) {
+        switch (_context4.prev = _context4.next) {
           case 0:
             url = "https://statfin.stat.fi/PxWeb/api/v1/en/StatFin/synt/statfin_synt_pxt_12dy.px";
-            _context3.next = 3;
+            _context4.next = 3;
             return fetch(url, {
               method: "POST",
               headers: {
@@ -3522,42 +3561,40 @@ var getData = /*#__PURE__*/function () {
               body: JSON.stringify(jsonQuery)
             });
           case 3:
-            res = _context3.sent;
+            res = _context4.sent;
             if (res.ok) {
-              _context3.next = 6;
+              _context4.next = 6;
               break;
             }
-            return _context3.abrupt("return");
+            return _context4.abrupt("return");
           case 6:
-            _context3.next = 8;
+            _context4.next = 8;
             return res.json();
           case 8:
-            data = _context3.sent;
-            console.log(data);
-            console.log(data.value);
-            return _context3.abrupt("return", data);
-          case 12:
+            data = _context4.sent;
+            return _context4.abrupt("return", data);
+          case 10:
           case "end":
-            return _context3.stop();
+            return _context4.stop();
         }
       }
-    }, _callee3);
+    }, _callee4);
   }));
   return function getData() {
-    return _ref3.apply(this, arguments);
+    return _ref4.apply(this, arguments);
   };
 }();
 var buildChart = /*#__PURE__*/function () {
-  var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
-    var fetchedData, data, chart;
-    return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+  var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
+    var fetchedData, data;
+    return _regeneratorRuntime().wrap(function _callee5$(_context5) {
       while (1) {
-        switch (_context4.prev = _context4.next) {
+        switch (_context5.prev = _context5.next) {
           case 0:
-            _context4.next = 2;
+            _context5.next = 2;
             return getData();
           case 2:
-            fetchedData = _context4.sent;
+            fetchedData = _context5.sent;
             data = {
               labels: jsonQuery.query[0].selection.values,
               datasets: [{
@@ -3570,17 +3607,17 @@ var buildChart = /*#__PURE__*/function () {
               data: data,
               height: 450,
               type: "line",
-              color: "#eb5146"
+              colors: ["#eb5146"]
             });
           case 5:
           case "end":
-            return _context4.stop();
+            return _context5.stop();
         }
       }
-    }, _callee4);
+    }, _callee5);
   }));
   return function buildChart() {
-    return _ref4.apply(this, arguments);
+    return _ref5.apply(this, arguments);
   };
 }();
 buildChart();
@@ -3610,7 +3647,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "33549" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "44473" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];

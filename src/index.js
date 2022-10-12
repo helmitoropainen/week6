@@ -3,8 +3,10 @@ import { Chart } from "frappe-charts/dist/frappe-charts.min.esm";
 
 const input = document.getElementById("input-area");
 const form = document.getElementById("input-form");
+const add = document.getElementById("add-data");
 let names;
 let codes;
+let chart;
 
 const jsonQuery = {
   query: [
@@ -71,7 +73,7 @@ const getAreas = async () => {
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
   const area = input.value.toLowerCase();
-  console.log(area);
+  //console.log(area);
   let areaIndex;
   names.forEach((value, index) => {
     if (value.toLowerCase() == area) {
@@ -83,6 +85,32 @@ form.addEventListener("submit", async (event) => {
     jsonQuery.query[1].selection.values[0] = code;
     buildChart();
   }
+});
+
+add.addEventListener("click", async () => {
+  const fetchedData = await getData();
+  const data = fetchedData.value;
+  const length = data.length - 1;
+  let deltas = [];
+  data.forEach((value, index) => {
+    if (index < length) {
+      deltas.push(data[index + 1] - data[index]);
+      //console.log(value, index);
+    }
+  });
+  let sum = 0;
+  deltas.forEach((item) => {
+    sum += item;
+  });
+  const mean = sum / length;
+  //console.log(deltas);
+  //console.log(sum, length, mean);
+  const newPoint = mean + data[length];
+  let newData = [];
+  newData.push(newPoint);
+  data.push(newPoint);
+  //console.log(data);
+  chart.addDataPoint("2022", newData);
 });
 
 const getData = async () => {
@@ -98,8 +126,8 @@ const getData = async () => {
     return;
   }
   const data = await res.json();
-  console.log(data);
-  console.log(data.value);
+  //console.log(data);
+  //console.log(data.value);
   return data;
 };
 
@@ -116,8 +144,8 @@ const buildChart = async () => {
     ],
   };
 
-  const chart = new Chart("#chart", {
-    //title: "Population",
+  chart = new Chart("#chart", {
+    title: "Population",
     data: data,
     height: 450,
     type: "line",

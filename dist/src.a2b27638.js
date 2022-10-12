@@ -3570,7 +3570,7 @@ var buildChart = /*#__PURE__*/function () {
               data: data,
               height: 450,
               type: "line",
-              colors: ["#eb5146"]
+              color: "#eb5146"
             });
           case 5:
           case "end":
